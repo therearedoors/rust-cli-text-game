@@ -45,6 +45,19 @@ impl Room {
     pub fn get_w(&self) -> i32 {
         self.w
     }
+
+    pub fn describe(&self) -> String {
+       format!("{}. {}.", self.get_name(), self.get_description()
+    + "\nThings here:\n" + self.describe_treasures().as_str())
+    }
+
+    fn describe_treasures(&self) -> String {
+        self.get_things()
+            .into_iter()
+            .map(|t| format!("{}: {}", t.get_name(), t.get_description()))
+            .collect::<Vec<String>>()
+            .join("\n")
+    }
 }
 
 impl ThingHolder<Treasure> for Room {

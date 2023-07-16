@@ -69,17 +69,18 @@ fn word_list(command: &String) -> Vec<String> {
 
 fn process_verb(game: &mut Game, wordlist: &Vec<String>) -> String {
     let verb_op = wordlist.get(0);
+    println!("{:?}", wordlist);
     let mut msg = String::new();
     let room = game.player.get_location();
     match verb_op {
         Some(verb) => match verb.as_str() {
-            "n" => go_n(game, room),
-            "s" => go_s(game, room),
-            "e" => go_e(game, room),
-            "w" => go_w(game, room),
+            "n" => {msg = go_n(game, room);},
+            "s" => {msg = go_s(game, room);},
+            "e" => {msg = go_e(game, room);},
+            "w" => {msg = go_w(game, room);},
             // "take" => msg = String::from("You take the {}.", noun),
             // "drop" => msg = String::from("You drop the {}.", noun),
-            // "look" => msg = String::from("You look around."),
+            "look" => {msg = look(game);},
             _ => msg.push_str("not yet implemented"),
         },
         None => panic!("No verb entered"),
@@ -101,31 +102,35 @@ fn process_verb_noun(game: &Game, wordlist: &Vec<String>) -> String {
     msg
 }
 
-fn go_n(game: &mut Game, room: Room) {
+fn go_n(game: &mut Game, room: Room) -> String {
     let Game { map, player, ..} = game;
     let room_number = player.move_to(map.to_vec(), room, Direction::North);
-    update_output(game, room_number);
+    update_output(game, room_number)
 }
 
-fn go_s(game: &mut Game, room: Room) {
+fn go_s(game: &mut Game, room: Room) -> String {
     let Game { map, player, ..} = game;
     let room_number = player.move_to(map.to_vec(), room, Direction::South);
-    update_output(game, room_number);
+    update_output(game, room_number)
 }
 
-fn go_w(game: &mut Game, room: Room) {
+fn go_w(game: &mut Game, room: Room) -> String {
     let Game { map, player, ..} = game;
     let room_number = player.move_to(map.to_vec(), room, Direction::West);
-    update_output(game, room_number);
+    update_output(game, room_number)
 }
 
-fn go_e(game: &mut Game, room: Room) {
+fn go_e(game: &mut Game, room: Room) -> String {
     let Game { map, player, ..} = game;
     let room_number = player.move_to(map.to_vec(), room, Direction::East);
-    update_output(game, room_number);
+    update_output(game, room_number)
 }
 
-fn update_output(game: &mut Game, room_number: i32) {
+fn look(game: &mut Game) -> String {w
+    "You are in the ".to_owned() + &game.get_player().get_location().describe()
+}
+
+fn update_output(game: &mut Game, room_number: i32) -> String {
     let s: String;
     if room_number == Direction::NOEXIT as i32 {
         s = String::from("No Exit!");
@@ -139,5 +144,5 @@ fn update_output(game: &mut Game, room_number: i32) {
             .join("\n");
         s = format!("You are in {}. {}\nThings here:\n{}", r.thing.get_name(), r.thing.get_description(), list_string);
     }
-    println!("{}", s);
+    s
 }

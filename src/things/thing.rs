@@ -1,4 +1,5 @@
 #[derive(Clone)]
+
 pub struct Thing {
     name: String,
     description: String,

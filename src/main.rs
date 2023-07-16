@@ -4,8 +4,6 @@ mod game;
 mod globals;
 mod things;
 
-
-
 fn main() {
     let treasure_ring = things::treasure::Treasure::new("ring".to_owned(), "It is a ring of great power".to_owned(), 500);
     let treasure_wombat = things::treasure::Treasure::new("wombat".to_owned(), "It is a cuddly little wombat. It is squeaking gently to itself.".to_owned(), 700);
