@@ -16,14 +16,14 @@ fn main() {
     let map = vec![room_1, room_2, room_3, room_4];
     let actual_world = game::World::new(map);
     let possible_worlds = vec![];
-    let game = game::Game::new(actual_world, possible_worlds, 0);
+    let mut game = game::Game::new(actual_world, possible_worlds, 0);
     game.show_intro();
     loop {
         let mut input = String::new();
         print!("> ");
         std::io::stdout().flush().unwrap();
         let _ = std::io::stdin().read_line(&mut input);
-        let output = "test output".to_string();
+        let output = game::Game::run_command(&mut game, &input);
         if input == "q\r\n" {
             println!("You quit the game");
             break;

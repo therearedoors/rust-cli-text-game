@@ -5,10 +5,10 @@ pub trait Thing {
     fn set_description(&mut self, description: String);
 }
 
-pub trait ThingHolder {
-    fn get_things(&self) -> Vec<Box<dyn Thing>>;
-    fn set_things(&mut self, things: Vec<Box<dyn Thing>>);
-}
+// pub trait ThingHolder {
+//     fn get_things(&self) -> Vec<Box<dyn Thing>>;
+//     fn set_things(&mut self, things: Vec<Box<dyn Thing>>);
+// }
 
 macro_rules! impl_thing {
     ($ty: ty) => {
@@ -32,19 +32,19 @@ macro_rules! impl_thing {
     }
 }
 
-macro_rules! impl_thing_holder {
-    ($ty: ty) => {
-        impl ThingHolder for $ty {
-            fn get_things(&self) -> Vec<Box<dyn Thing>> {
-                return self.things.clone();
-            }
+// macro_rules! impl_thing_holder {
+//     ($ty: ty) => {
+//         impl ThingHolder for $ty {
+//             fn get_things(&self) -> Vec<Box<dyn Thing>> {
+//                 return self.things.clone();
+//             }
 
-            fn set_things(&mut self, things: Vec<Box<dyn Thing>>) {
-                self.things = things;
-            }
-        }
-    }
-}
+//             fn set_things(&mut self, things: Vec<Box<dyn Thing>>) {
+//                 self.things = things;
+//             }
+//         }
+//     }
+// }
 
 pub(crate) use impl_thing;
-pub(crate) use impl_thing_holder;
+//pub(crate) use impl_thing_holder;

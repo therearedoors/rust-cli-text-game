@@ -1,18 +1,18 @@
-use crate::things::{thing::{Thing, ThingHolder, impl_thing, impl_thing_holder}, room::Room};
+use crate::things::{thing::{Thing, impl_thing}, room::Room};
 
 pub struct Actor {
     name: String,
     description: String,
     location: isize,
-    pub things: Vec<Box<dyn Thing>>
+    //pub things: Vec<Box<dyn Thing>>
 }
 
 impl_thing!(Actor);
-impl_thing_holder!(Actor);
+//impl_thing_holder!(Actor);
 
 impl Actor {
     pub fn new(name: String, description: String, location: isize) -> Actor {
-        Actor {name, description, location, things: vec![]}
+        Actor {name, description, location, /*things: vec![]*/}
     }
 
     pub fn get_location(&self) -> isize {
@@ -23,8 +23,8 @@ impl Actor {
         self.location = location;
     }
 
-    pub fn move_to(&mut self, map: &Vec<Room>, r: isize) -> i32 {
-        let exit;
+    pub fn move_to(&mut self, map: &Vec<Room>, r: isize) -> isize {
+        let exit = r;
         // match dir {
         //     Direction::North => {
         //         exit = r.get_n();
@@ -42,11 +42,11 @@ impl Actor {
         //         exit = Direction::NOEXIT as i32;
         //     },
         // }
-        if r != -1 {
-            self.set_location(exit as isize);
-        } else {
-            exit = -1;
-        }
+        // if r != -1 {
+        //     self.set_location(Direction::NOEXIT as isize);
+        // } else {
+        //     exit = -1;
+        // }
         exit
         }
 }

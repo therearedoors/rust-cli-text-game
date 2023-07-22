@@ -1,5 +1,5 @@
 use crate::globals::Direction;
-use crate::things::{room::Room, actor::Actor, thing::{Thing, ThingHolder}};
+use crate::things::{room::Room, actor::Actor, thing::{Thing}};
 
 pub struct Game {
     actual_world: World,
@@ -108,20 +108,20 @@ impl Game {
         "Nothing to be seen".to_owned()
     }
     
-    fn update_output(&self, room_number: i32) -> String {
+    fn update_output(&self, room_number: isize) -> String {
         let s: String;
-        if room_number == Direction::NOEXIT as i32 {
+        if room_number == Direction::NOEXIT as isize {
             s = String::from("No Exit!");
         } else {
             let rooms =  &self.actual_world.map;
             let &idx = &self.get_player_ref().get_location();
             let r = rooms.get(idx as usize).unwrap();
-            let list_string = r.get_things()
-                .into_iter()
-                .map(|t| format!("{}: {}", t.get_name(), t.get_description()))
-                .collect::<Vec<String>>()
-                .join("\n");
-            s = format!("You are in {}. {}\nThings here:\n{}", r.get_name(), r.get_description(), list_string);
+            // let list_string = r.get_things()
+            //     .into_iter()
+            //     .map(|t| format!("{}: {}", t.get_name(), t.get_description()))
+            //     .collect::<Vec<String>>()
+            //     .join("\n");
+            s = format!("You are in {}. {}\nThings here:\n{:?}", r.get_name(), r.get_description(), vec!["ring","wombat"]/* , list_string*/);
         }
         s
     } 
