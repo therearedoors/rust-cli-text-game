@@ -1,20 +1,25 @@
-use crate::things::thing::{Thing, impl_thing};
+use crate::things::info::Info;
 
-#[derive(Clone)]
+#[derive(Clone,Debug)]
 pub struct Treasure {
-    name: String,
-    description: String,
+    info: Info,
     value: usize,
 }
 
-impl_thing!(Treasure);
-
 impl Treasure {
-    pub fn new(name: String, description: String, value: usize) -> Treasure {
-        Treasure {name, description, value}
+    pub fn new(info: Info, value: usize) -> Treasure {
+        Treasure {info, value}
     }
 
     pub fn get_value(&self) -> usize {
         self.value
+    }
+
+    pub fn get_name(&self) -> &String {
+        &self.info.name
+    }
+
+    pub fn get_description(&self) -> &String {
+        &self.info.description
     }
 }

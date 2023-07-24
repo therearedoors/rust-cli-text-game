@@ -1,5 +1,6 @@
 use crate::globals::Direction;
-use crate::things::{room::Room, actor::Actor, thing::{Thing}};
+use crate::traits::grasp::Grasp;
+use crate::things::{room::Room, actor::Actor, info::Info, treasure::Treasure};
 
 pub struct Game {
     actual_world: World,
@@ -11,10 +12,10 @@ pub struct Game {
 impl Game {
     pub fn new(aw: World, pw: Vec<World>, player_start: isize) -> Game {
         Game {
-            actual_world: aw,
+            actual_world: aw.clone(),
             possible_worlds: pw,
-            player: Actor::new("player".to_owned(), "a lovable game-player".to_owned(), player_start),
-            commands: vec!["take".to_owned(), "drop".to_owned(), "look".to_owned(), "n".to_owned(), "s".to_owned(), "e".to_owned(), "w".to_owned()]}
+            player: Actor::new(Info { name: "player".to_owned(), description: "a lovable game-player".to_owned()}, aw.map[player_start as usize].clone(), vec![]),
+            commands: vec!["take".to_owned(), "drop".to_owned(), "look".to_owned(), "inventory".to_owned(), "l".to_owned(), "i".to_owned(), "save".to_owned(), "load".to_owned(), "n".to_owned(), "s".to_owned(), "e".to_owned(), "w".to_owned()]}
     }
 
     pub fn get_player_ref(&self) -> &Actor {
@@ -68,10 +69,10 @@ impl Game {
         let room = game.player.get_location();
         match verb_op {
             Some(verb) => match verb.as_str() {
-                "n" => {msg = Self::go_in_direction(game, room, Direction::North);},
-                "s" => {msg = Self::go_in_direction(game, room, Direction::South);},
-                "e" => {msg = Self::go_in_direction(game, room, Direction::East);},
-                "w" => {msg = Self::go_in_direction(game, room, Direction::West);},
+                "n" => {msg = Self::go_in_direction(game, *room, Direction::North);},
+                "s" => {msg = Self::go_in_direction(game, *room, Direction::South);},
+                "e" => {msg = Self::go_in_direction(game, *room, Direction::East);},
+                "w" => {msg = Self::go_in_direction(game, *room, Direction::West);},
                 // "take" => msg = String::from("You take the {}.", noun),
                 // "drop" => msg = String::from("You drop the {}.", noun),
                 "look" => {msg = Self::look(game);},
@@ -96,16 +97,13 @@ impl Game {
         msg
     }
 
-    fn go_in_direction(game: &mut Game, room: isize, direction: Direction) -> String {
-        let room_number = game.player.move_to(&game.actual_world.map, room);
-        Self::update_output(game, room_number)
+    fn go_in_direction(game: &mut Game, room: Room, direction: Direction) -> String {
+        let room_number = game.player.move_to(game.actual_world.map.clone(), direction);
+        Self::update_output(game, room_number as isize)
     }
 
     fn look(game: &mut Game) -> String {
-        if let Some(location) = game.actual_world.map.get(game.player.get_location() as usize) {
-            return "You are in the ".to_owned() + location.describe().clone().as_str();
-        }
-        "Nothing to be seen".to_owned()
+        "You are in the ".to_owned() + game.player.get_location().describe().clone().as_str()
     }
     
     fn update_output(&self, room_number: isize) -> String {
@@ -113,20 +111,20 @@ impl Game {
         if room_number == Direction::NOEXIT as isize {
             s = String::from("No Exit!");
         } else {
-            let rooms =  &self.actual_world.map;
-            let &idx = &self.get_player_ref().get_location();
-            let r = rooms.get(idx as usize).unwrap();
-            // let list_string = r.get_things()
-            //     .into_iter()
-            //     .map(|t| format!("{}: {}", t.get_name(), t.get_description()))
-            //     .collect::<Vec<String>>()
-            //     .join("\n");
-            s = format!("You are in {}. {}\nThings here:\n{:?}", r.get_name(), r.get_description(), vec!["ring","wombat"]/* , list_string*/);
+            let room = &self.player.get_location();
+            let list_string = room.get_treasures()
+                .into_iter()
+                .map(|t| format!("{}: {}", t.get_name(), t.get_description()))
+                .collect::<Vec<String>>()
+                .join("\n");
+
+            s = format!("You are in {}. {}\nThings here:\n{:?}", room.get_name(), room.get_description(), list_string);
         }
         s
     } 
 }
 
+#[derive(Clone,Debug)]
 pub struct World {
     map: Vec<Room>
 }
